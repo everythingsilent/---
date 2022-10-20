@@ -1,7 +1,7 @@
 import numpy
 
 
-def get_eye_threshold(left_eye, right_eye):
+def get_ear(left_eye, right_eye):
     left_a = abs(left_eye[38].y - left_eye[42].y)
     left_b = abs(left_eye[39].y - left_eye[41].y)
     left_c = 2 * abs(left_eye[37].x - left_eye[40].x)
@@ -12,12 +12,12 @@ def get_eye_threshold(left_eye, right_eye):
     right_c = 2 * abs(right_eye[43].x - right_eye[46].x)
     right_eye_threshold = (right_a + right_b) / right_c
 
-    eye_threshold = round(numpy.average([left_eye_threshold, right_eye_threshold]), 2)
-    return eye_threshold
+    ear = round(numpy.average([left_eye_threshold, right_eye_threshold]), 2)
+    return ear
 
 
-def get_yawn_threshold(yawn):
-    yawn_threshold = round(((yawn[51].y - yawn[59].y) + (yawn[53].y - yawn[57].y)) /
+def get_mar(yawn):
+    mar = round(((yawn[51].y - yawn[59].y) + (yawn[53].y - yawn[57].y)) /
                            (2 * (yawn[49].x - yawn[55].x)), 2)
 
-    return yawn_threshold
+    return mar

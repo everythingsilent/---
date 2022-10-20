@@ -4,7 +4,7 @@ import dlib
 
 face_detection_model = os.path.join(os.path.dirname(os.getcwd()),
                                     "common", "model", "haarcascade_frontalface_alt.xml")
-
+#模块路径的不统一导致无法读取
 if not os.path.isfile(face_detection_model):
     face_detection_model = os.path.join(os.getcwd(),
                                         "common", "model", "haarcascade_frontalface_alt.xml")
@@ -30,7 +30,8 @@ def face_area_numpy_to_dlib(face_area_n):
             try:
                 face_area_dlib.append(dlib.rectangle(int(left), int(up), int(right), int(down)))
             except:
-                print("none dlib areas")
+                print("numpy转dlib数据失败")
+                raise Exception
 
     #[rectangle(278,274,451,447)]
     return face_area_dlib
