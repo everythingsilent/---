@@ -19,5 +19,4 @@ def get_ear(left_eye, right_eye):
 def get_mar(yawn):
     mar = round(((yawn[51].y - yawn[59].y) + (yawn[53].y - yawn[57].y)) /
                            (2 * (yawn[49].x - yawn[55].x)), 2)
-
     return mar

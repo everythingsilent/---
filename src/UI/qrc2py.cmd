@@ -1,0 +1,1 @@
+pyrcc5 -o common_rc.py common.qrc

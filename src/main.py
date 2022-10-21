@@ -10,6 +10,7 @@ if __name__ == '__main__':
     camer= cv2.VideoCapture(CONFIG["camera_source"])
     while camer.isOpened():
         ret, frame = camer.read()
+        frame = cv2.resize(frame,(350,300))
 
 
 

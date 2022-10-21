@@ -9,7 +9,7 @@ CONFIG = ConfigGeneration.get_config()
 
 
 def draw_face_points(frame, face_key_points):
-    for i in range(37,68):
+    for i in range(36,68):
         cv2.circle(frame, (face_key_points.part(i).x, face_key_points.part(i).y), 1, (255, 255, 255), -1)
     return frame
 

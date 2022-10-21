@@ -25,7 +25,7 @@ def face_area_numpy_to_dlib(face_area_n):
     if face_area_n != tuple():
         for i in range(len(face_area_n)):
             left, right = face_area_n[i][0], face_area_n[i][0] + face_area_n[i][2]
-            up, down = face_area_n[i][1], face_area_n[i][1] + face_area_n[i][3]+25
+            up, down = face_area_n[i][1], face_area_n[i][1] + face_area_n[i][3] + 25
 
             try:
                 face_area_dlib.append(dlib.rectangle(int(left), int(up), int(right), int(down)))
