@@ -7,7 +7,7 @@ import cv2
 import numpy
 
 from common import ConfigGeneration
-from indicator import IndicatorCalc
+from indicator import AspectRatioCalc
 
 CONFIG = ConfigGeneration.get_config()
 
@@ -32,7 +32,7 @@ class MainWindow(QMainWindow):
                 ret, frame = self.camera.read()
                 frame = cv2.resize(frame, (350, 300))
 
-                frame, ear, mar = IndicatorCalc.get_fatigue_index(frame, True)
+                frame, ear, mar = AspectRatioCalc.get_aspect_ratio(frame)
 
                 self.show_info(ear, mar)
                 self.show_frame(frame)
