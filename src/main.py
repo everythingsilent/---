@@ -2,31 +2,24 @@ import cv2
 import numpy
 
 from common import ConfigGeneration
-from indicator import AspectRatioCalc, IndicatorCalc
+from indicator import IndicatorCalc
 
 CONFIG = ConfigGeneration.get_config()
 
-def show_threshold_info(ear,mar):
-    if ear != None and mar != None:
-        if ear <= CONFIG["personal_characteristics_threshold"]["eye"]:
-            print("已闭眼")
-        if mar >= CONFIG["personal_characteristics_threshold"]["yawn"]:
-            print("哈切")
-
-
 if __name__ == '__main__':
-    total_frame = 0
-
+    fatigue_indicator = IndicatorCalc.Fatigue()
 
     camer= cv2.VideoCapture(CONFIG["camera_source"])
     while camer.isOpened():
         ret, frame = camer.read()
-        total_frame += 1
 
-        frame, ear, mar = AspectRatioCalc.get_aspect_ratio(frame)
-        show_threshold_info(ear, mar)
+        frame = fatigue_indicator.update(frame)
 
-
+        # 每分钟进行重置并显示疲劳指标
+        if fatigue_indicator.total_time >= 60:
+            print(fatigue_indicator.get_indicator())
+            fatigue_indicator.show_info()
+            fatigue_indicator.__init__()
 
         cv2.imshow("windows", frame)
         if cv2.waitKey(1) == 27:

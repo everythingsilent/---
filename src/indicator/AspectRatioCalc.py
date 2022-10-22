@@ -3,7 +3,9 @@ import cv2
 
 from faceKeyPoints import KeyPointsDetection
 from faceArea import FaceDetection
+from common import ConfigGeneration
 
+CONFIG = ConfigGeneration.get_config()
 
 def get_ear(left_eye, right_eye):
     left_a = abs(left_eye[38].y - left_eye[42].y)
@@ -51,7 +53,7 @@ def calc_aspect_ratio(face_key_points):
     return ear, mar
 
 
-def get_aspect_ratio(frame, show_face_area = True, show_face_points = True):
+def get_aspect_ratio(frame, show_face_area=True, show_face_points=True):
 
     face_areas = FaceDetection.get_face_area_n(frame)
     face_areas_dlib = FaceDetection.face_area_numpy_to_dlib(face_areas)
@@ -69,4 +71,7 @@ def get_aspect_ratio(frame, show_face_area = True, show_face_points = True):
 
         # break 只返回一个人的眼睑，嘴部纵横比
         return frame, ear, mar
-    return frame, None, None
+    # 未检测到人脸，则返回未处理过的图片，且ear，与mar的值不触发闭眼，打哈切
+    ear = CONFIG["personal_characteristics_threshold"]["eye"]+1
+    mar = CONFIG["personal_characteristics_threshold"]["yawn"]-1
+    return frame, ear, mar

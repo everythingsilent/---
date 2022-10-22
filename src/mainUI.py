@@ -7,7 +7,7 @@ import cv2
 import numpy
 
 from common import ConfigGeneration
-from indicator import AspectRatioCalc
+from indicator import IndicatorCalc
 
 CONFIG = ConfigGeneration.get_config()
 
@@ -17,6 +17,8 @@ class MainWindow(QMainWindow):
         super().__init__()
         self.windows = Ui_Form()
         self.windows.setupUi(self)
+
+        self.fatigue_indicator = IndicatorCalc.Fatigue()
 
         self.windows.pushButton.clicked.connect(self.start)
         self.windows.pushButton_2.clicked.connect(self.stop)
@@ -32,11 +34,15 @@ class MainWindow(QMainWindow):
                 ret, frame = self.camera.read()
                 frame = cv2.resize(frame, (350, 300))
 
-                frame, ear, mar = AspectRatioCalc.get_aspect_ratio(frame)
+                frame = self.fatigue_indicator.update(frame)
 
-                self.show_info(ear, mar)
+                self.fatigue_indicator.show_info()
+
+                fatigue_indicator = self.fatigue_indicator.get_indicator()
+                self.windows.label_2.setText("疲劳指标")
+                self.windows.label_3.setText(fatigue_indicator)
+
                 self.show_frame(frame)
-
                 cv2.waitKey(1)
 
 
@@ -46,19 +52,6 @@ class MainWindow(QMainWindow):
             self.camera.release()
 
 
-    def show_info(self, ear, mar):
-        if ear != None and mar != None:
-            if ear <= CONFIG["personal_characteristics_threshold"]["eye"]:
-                self.windows.label_2.setText("{} - {}".format(str(ear), "已闭眼"))
-            else:
-                self.windows.label_2.setText("{} - {}".format(str(ear), "已睁开眼"))
-
-            if mar >= CONFIG["personal_characteristics_threshold"]["yawn"]:
-                self.windows.label_3.setText("{} - {}".format(str(mar), "哈切"))
-            else:
-                self.windows.label_3.setText("{} - {}".format(str(mar), "闭嘴"))
-
-
     def show_frame(self, frame):
         frame_qt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
         frame_qt = QImage(frame_qt.data,
@@ -66,8 +59,6 @@ class MainWindow(QMainWindow):
                           QImage.Format_RGB32).rgbSwapped()
         self.windows.label.setPixmap(QPixmap.fromImage(frame_qt))
         self.windows.label.show()
-
-
 
 
 if __name__ == "__main__":
