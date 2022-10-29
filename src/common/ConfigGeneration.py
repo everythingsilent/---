@@ -1,7 +1,6 @@
 import os
 import json
 
-
 config_root = os.getcwd()
 config_url = os.path.join(config_root, "config.json")
 
