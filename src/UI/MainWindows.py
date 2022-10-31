@@ -38,7 +38,7 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
         self.pushButton.setText(_translate("Form", "start"))
-        self.pushButton_2.setText(_translate("Form", "stop"))
+        self.pushButton_2.setText(_translate("Form", "提示"))
         self.label_2.setText(_translate("Form", "标题"))
         self.label_3.setText(_translate("Form", "值"))
 

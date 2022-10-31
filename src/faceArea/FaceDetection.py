@@ -4,7 +4,7 @@ import dlib
 
 face_detection_model = os.path.join(os.path.dirname(os.getcwd()),
                                     "common", "model", "haarcascade_frontalface_alt.xml")
-#模块路径的不统一导致无法读取
+# 模块路径的不统一导致无法读取
 if not os.path.isfile(face_detection_model):
     face_detection_model = os.path.join(os.getcwd(),
                                         "common", "model", "haarcascade_frontalface_alt.xml")

@@ -3,7 +3,7 @@ import os
 
 key_points_detection_model = os.path.join(os.path.dirname(os.getcwd()),
                                          "common", "model", "shape_predictor_68_face_landmarks.dat")
-#模块路径的不统一导致无法读取
+# 模块路径的不统一导致无法读取
 if not os.path.isfile(key_points_detection_model):
     key_points_detection_model = os.path.join(os.getcwd(),
                                              "common", "model", "shape_predictor_68_face_landmarks.dat")

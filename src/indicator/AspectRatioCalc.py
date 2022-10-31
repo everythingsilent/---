@@ -54,7 +54,6 @@ def calc_aspect_ratio(face_key_points):
 
 
 def get_aspect_ratio(frame, show_face_area=True, show_face_points=True):
-
     face_areas = FaceDetection.get_face_area_n(frame)
     face_areas_dlib = FaceDetection.face_area_numpy_to_dlib(face_areas)
 

@@ -6,6 +6,7 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 
 import cv2
 import numpy
+from threading import Thread
 
 from common import ConfigGeneration
 from indicator import IndicatorCalc
@@ -29,18 +30,31 @@ class MainWindow(QMainWindow):
         self.windows.setupUi(self)
 
         self.fatigue_indicator = IndicatorCalc.Fatigue()
-        self.camera = cv2.VideoCapture(CONFIG["camera_source"])
+
+        self.open_camera = Thread(target=self.open_camera)
+        self.open_camera.start()
+        self.windows.pushButton.setDisabled(True)
+        self.windows.pushButton.setText("加载摄像头中")
+
         self.camera_switch = False
 
         self.windows.pushButton.clicked.connect(self.start)
         self.windows.pushButton_2.clicked.connect(self.prompt)
 
 
+    def open_camera(self):
+        self.camera = cv2.VideoCapture(CONFIG["camera_source"])
+        self.windows.pushButton.setDisabled(False)
+        self.windows.pushButton.setText("start")
+
+
     def start(self):
         if not self.camera_switch:
             self.camera_switch = True
+            self.windows.pushButton.setText("stop")
         else:
             self.camera_switch = False
+            self.windows.pushButton.setText("start")
 
         if self.camera.isOpened():
             # 若为while True，则会存在camera读取不到frame而导致程序崩溃。关闭camera存在时间空隙
