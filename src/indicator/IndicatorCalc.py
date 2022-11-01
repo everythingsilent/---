@@ -87,7 +87,9 @@ class Fatigue:
 
         # 计算获取ear与mar的过程时间，即当前帧的时间
         start_time = time.time()
-        frame, ear, mar = AspectRatioCalc.get_aspect_ratio(frame)
+        frame, ear, mar = AspectRatioCalc.get_aspect_ratio(frame,
+                                                           show_face_area=bool(CONFIG["frame_display"]["show_face_area"]),
+                                                           show_face_points=bool(CONFIG["frame_display"]["show_face_points"]))
         end_time = time.time()
         process_time = end_time - start_time
 

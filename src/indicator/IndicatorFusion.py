@@ -1,6 +1,6 @@
 # 将各级疲劳程度依次用数值表示：
-# 不疲劳    轻度	中度	重度
-# 0.1       0.3     0.7     1
+# 清醒0        轻度1      中度2      重度3
+# 0.1       0.3     0.7         1
 
 
 def perclos_level(n):
@@ -40,10 +40,14 @@ def fusion_algorithm(perclos, eye, yawn):
     total = round((perclos * 1) + (eye * 0.8) + (yawn * 0.5), 2)
 
     if total <= 0.23:
-        return "清醒"
+        # 清醒
+        return 0
     elif total > 0.23 and total <= 0.69:
-        return "轻度疲劳"
+        # 轻度疲劳
+        return 1
     elif total > 0.69 and total <= 1.61:
-        return "中度疲劳"
+        # 中度疲劳
+        return 2
     else:
-        return "重度疲劳"
+        # 重度疲劳
+        return 3
