@@ -1,4 +1,4 @@
-from UI.MainWindows import Ui_Form
+from UI.UIMainWindows import Ui_Form
 from PyQt5.QtWidgets import *
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QUrl
@@ -34,8 +34,6 @@ class MainWindow(QMainWindow):
         self.open_camera = Thread(target=self.open_camera)
         self.open_camera.start()
         self.windows.pushButton.setDisabled(True)
-        self.windows.pushButton.setText("加载摄像头中")
-
         self.camera_switch = False
 
         self.windows.pushButton.clicked.connect(self.start)
@@ -45,18 +43,20 @@ class MainWindow(QMainWindow):
     def open_camera(self):
         self.camera = cv2.VideoCapture(CONFIG["camera_source"])
         self.windows.pushButton.setDisabled(False)
-        self.windows.pushButton.setText("start")
+        self.windows.pushButton.setText("开始检测")
 
 
     def start(self):
         if not self.camera_switch:
             self.camera_switch = True
-            self.windows.pushButton.setText("stop")
+            self.windows.pushButton.setText("暂停")
         else:
             self.camera_switch = False
-            self.windows.pushButton.setText("start")
+            self.windows.pushButton.setText("继续")
 
         if self.camera.isOpened():
+            indicator_class = ["清醒","轻度疲劳","中度疲劳","重度疲劳"]
+
             # 若为while True，则会存在camera读取不到frame而导致程序崩溃。关闭camera存在时间空隙
             while self.camera.isOpened():
                 ret, frame = self.camera.read()
@@ -69,12 +69,13 @@ class MainWindow(QMainWindow):
 
                     fatigue_indicator = self.fatigue_indicator.get_indicator()
                     self.windows.label_2.setText("疲劳指标")
-                    self.windows.label_3.setText(fatigue_indicator)
+                    self.windows.label_3.setText(indicator_class[fatigue_indicator])
 
                     self.show_frame(frame)
                     cv2.waitKey(1)
                 else:
                     cv2.waitKey(0)
+
 
     def show_frame(self, frame):
         frame_qt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
@@ -90,7 +91,7 @@ class MainWindow(QMainWindow):
         self.new_windows = NewWindow()
         self.new_windows.show()
 
-        music_path =r"UI\audio\moderate.mp3"
+        music_path = r"../UI/audio/moderate.mp3"
         url = QUrl.fromLocalFile(music_path)
         content = QMediaContent(url)
 

@@ -7,11 +7,19 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QMouseEvent
+from PyQt5.QtWidgets import QApplication, QMainWindow
+
+import time
+
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(373, 188)
+        MainWindow.move(QApplication.desktop().width()-MainWindow.width()-30,
+                               1080-MainWindow.height()-60)
         self.centralwidget = QtWidgets.QWidget(MainWindow)
         self.centralwidget.setObjectName("centralwidget")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.centralwidget)
@@ -60,7 +68,7 @@ class Ui_MainWindow(object):
         self.imgLabel.setScaledContents(True)
         self.imgLabel.setObjectName("imgLabel")
         self.infoLabel = QtWidgets.QLabel(self.frame)
-        self.infoLabel.setGeometry(QtCore.QRect(80, 80, 261, 31))
+        self.infoLabel.setGeometry(QtCore.QRect(80, 70, 261, 60))
         self.infoLabel.setStyleSheet("font: 12pt \"微软雅黑\";")
         self.infoLabel.setObjectName("infoLabel")
         self.verticalLayout.addWidget(self.frame)
@@ -73,7 +81,29 @@ class Ui_MainWindow(object):
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
         MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
-        self.titleLabel.setText(_translate("MainWindow", "提示"))
-        self.infoLabel.setText(_translate("MainWindow", "您已经 轻度疲劳，运动一下。"))
+        MainWindow.setWindowFlags(Qt.FramelessWindowHint | Qt.WindowStaysOnTopHint)
+        MainWindow.setAttribute(Qt.WA_TranslucentBackground)
+        self.titleLabel.setText(_translate("MainWindow", f"疲劳提示"))
+        self.infoLabel.setText(_translate("MainWindow", "None"))
+        self.infoLabel.setWordWrap(True)
+
 
 from UI import common_rc
+class PromptWindow(QMainWindow):
+    def __init__(self, fatigue_prompt_level=1):
+        super().__init__()
+        self.promptWindow = Ui_MainWindow()
+        self.promptWindow.setupUi(self)
+        if fatigue_prompt_level == 1:
+            self.promptWindow.imgLabel.setPixmap(QtGui.QPixmap(":/ico/images/走路.png"))
+            self.promptWindow.infoLabel.setText("您已经 轻度疲劳，运动一下。")
+        elif fatigue_prompt_level == 2:
+            self.promptWindow.imgLabel.setPixmap(QtGui.QPixmap(":/ico/images/咖啡.png"))
+            self.promptWindow.infoLabel.setText("您已经 中度疲劳，喝杯咖啡。")
+        elif fatigue_prompt_level == 3:
+            self.promptWindow.imgLabel.setPixmap(QtGui.QPixmap(":/ico/images/床.png"))
+            self.promptWindow.infoLabel.setText("您已经 重度疲劳，休息一会儿。")
+        else:
+            self.promptWindow.imgLabel.setPixmap(QtGui.QPixmap(":/ico/images/工人.png"))
+            self.promptWindow.infoLabel.setText("当前您的状态为 清醒。")
+

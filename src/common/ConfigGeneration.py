@@ -22,7 +22,7 @@ def set_config(camera_source=0,
                        "personal_characteristics_threshold":personal_characteristics_threshold,
                        "prompt_interval_minute":prompt_interval_minute,
                        "frame_display":frame_display}
-        config_json = json.dumps(config_data)
+        config_json = json.dumps(config_data, sort_keys=True, indent=4, separators=(',', ':'))
 
         config_file = open(config_url, 'w')
         config_file.write(config_json)
@@ -40,3 +40,6 @@ def get_config():
         return config_data
     except:
         return None
+
+
+# set_config()

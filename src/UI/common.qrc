@@ -3,10 +3,11 @@
     <file>images/main.jpg</file>
   </qresource>
   <qresource prefix="ico">
+    <file>images/工人.png</file>
     <file>images/床.png</file>
     <file>images/咖啡.png</file>
-    <file>images/close.png</file>
     <file>images/走路.png</file>
+    <file>images/close.png</file>
     <file>images/minus.png</file>
     <file>images/setting.png</file>
   </qresource>

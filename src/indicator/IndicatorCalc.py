@@ -94,7 +94,7 @@ class Fatigue:
         process_time = end_time - start_time
 
         self.total_frame+=1
-        self.total_time+=process_time
+        # self.total_time+=process_time
 
         self.update_close_eye(ear, process_time)
         self.update_yawn(mar)
