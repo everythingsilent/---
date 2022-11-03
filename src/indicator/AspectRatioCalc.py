@@ -7,6 +7,7 @@ from common import ConfigGeneration
 
 CONFIG = ConfigGeneration.get_config()
 
+
 def get_ear(left_eye, right_eye):
     left_a = abs(left_eye[38].y - left_eye[42].y)
     left_b = abs(left_eye[39].y - left_eye[41].y)
@@ -24,12 +25,12 @@ def get_ear(left_eye, right_eye):
 
 def get_mar(yawn):
     mar = round(((yawn[51].y - yawn[59].y) + (yawn[53].y - yawn[57].y)) /
-                           (2 * (yawn[49].x - yawn[55].x)), 2)
+                (2 * (yawn[49].x - yawn[55].x)), 2)
     return mar
 
 
 def draw_face_points(frame, face_key_points):
-    for i in range(36,68):
+    for i in range(36, 68):
         cv2.circle(frame, (face_key_points.part(i).x, face_key_points.part(i).y),
                    1, (255, 255, 255), -1)
     return frame
@@ -71,6 +72,6 @@ def get_aspect_ratio(frame, show_face_area=True, show_face_points=True):
         # break 只返回一个人的眼睑，嘴部纵横比
         return frame, ear, mar
     # 未检测到人脸，则返回未处理过的图片，且ear，与mar的值不触发闭眼，打哈切
-    ear = CONFIG["personal_characteristics_threshold"]["eye"]+1
-    mar = CONFIG["personal_characteristics_threshold"]["yawn"]-1
+    ear = CONFIG["personal_characteristics_threshold"]["eye"] + 1
+    mar = CONFIG["personal_characteristics_threshold"]["yawn"] - 1
     return frame, ear, mar

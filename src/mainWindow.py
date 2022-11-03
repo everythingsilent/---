@@ -66,28 +66,57 @@ class MainWindow(QMainWindow):
                                          f"平均打哈切次数:{fatigue_detector.get_avg_yawn_count()}\n"
                                          f"平均闭眼时长:{fatigue_detector.get_avg_close_time()}\n"
                                          f"PERCLOS:{fatigue_detector.get_perclos()}\n"
-                                         f"总检测时长:{round(fatigue_detector.total_time, 2)}")
+                                         f"总检测时长:{round(fatigue_detector.total_time, 2)}秒")
 
 
         def prompt_voice_broadcast(current_indicator):
-            print("语音播报")
+            def get_audio_path():
+                if current_indicator == 1:
+                    ret_audio_path = r"UI/audio/mild.mp3"
+                elif current_indicator == 2:
+                    ret_audio_path = r"UI/audio/moderate.mp3"
+                elif current_indicator == 3:
+                    ret_audio_path = r"UI/audio/severe.mp3"
+                else:
+                    ret_audio_path = r"UI/audio/fine.mp3"
+                return ret_audio_path
+
+            audio_path = get_audio_path()
+            url = QUrl.fromLocalFile(audio_path)
+            content = QMediaContent(url)
+
+            self.player = QMediaPlayer()
+            self.player.setMedia(content)
+            self.player.play()
 
 
         def prompt_windows_warning(current_indicator):
-            print("弹窗警告")
+            def close_window_warning(window, t):
+                time.sleep(t)
+                window.close()
+
+            windows_warning_app = QApplication([])
+            window_warning = PromptWindow(current_indicator)
+            window_warning.show()
+
+            close_window_warning_prompt = Thread(target=close_window_warning, args=(window_warning, 10))
+            close_window_warning_prompt.start()
+
+            windows_warning_app.exec_()
 
 
         def prompt_info_prompt(current_indicator):
             print("信息提示")
+            print("当前状态为：", current_indicator)
 
 
         def prompt_mode(current_indicator):
             if CONFIG["prompt_mode"]["voice_broadcast"] == 1:
-                prompt_voice_broadcast(current_indicator)
+                Thread(target=prompt_voice_broadcast, args=(current_indicator,)).start()
             if CONFIG["prompt_mode"]["windows_warning"] == 1:
-                prompt_windows_warning(current_indicator)
+                Thread(target=prompt_windows_warning, args=(current_indicator,)).start()
             if CONFIG["prompt_mode"]["info_prompt"] == 1:
-                prompt_info_prompt(current_indicator)
+                Thread(target=prompt_info_prompt, args=(current_indicator,)).start()
 
 
         prompt_interval_minute = CONFIG["prompt_interval_minute"]
@@ -109,13 +138,13 @@ class MainWindow(QMainWindow):
             trigger_time = Decimal(str(current_minute)) % Decimal(str(prompt_interval_minute))
 
             self.fatigue_detector.total_time = current_time
-            self.windows.pushButton.setText(f"{current_minute} {trigger_time}")
+            self.windows.label_2.setText(self.windows.label_2.text()+f"\n检测分钟时长:{current_minute}分\n触发提示时间:{trigger_time}/{prompt_interval_minute} ")
 
             if trigger_time == 0 and last_recorded_minute != current_minute:
                 last_recorded_minute = current_minute
 
                 # 当前指标对应提示方式
-                if minimum_prompt_level >= fatigue_indicator:
+                if minimum_prompt_level <= fatigue_indicator:
                     prompt_mode(fatigue_indicator)
 
             cv2.waitKey(1)
