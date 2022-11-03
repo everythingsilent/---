@@ -72,13 +72,13 @@ class MainWindow(QMainWindow):
         def prompt_voice_broadcast(current_indicator):
             def get_audio_path():
                 if current_indicator == 1:
-                    ret_audio_path = r"UI/audio/mild.mp3"
+                    ret_audio_path = r"common/audio/mild.mp3"
                 elif current_indicator == 2:
-                    ret_audio_path = r"UI/audio/moderate.mp3"
+                    ret_audio_path = r"common/audio/moderate.mp3"
                 elif current_indicator == 3:
-                    ret_audio_path = r"UI/audio/severe.mp3"
+                    ret_audio_path = r"common/audio/severe.mp3"
                 else:
-                    ret_audio_path = r"UI/audio/fine.mp3"
+                    ret_audio_path = r"common/audio/fine.mp3"
                 return ret_audio_path
 
             audio_path = get_audio_path()
