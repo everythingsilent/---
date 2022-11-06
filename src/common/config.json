@@ -1,10 +1,10 @@
 {
-    "camera_source":0,
+    "camera_source":1,
     "frame_display":{
         "show_face_area":1,
         "show_face_points":1
     },
-    "minimum_prompt_level":0,
+    "minimum_prompt_level":1,
     "personal_characteristics_threshold":{
         "eye":0.2,
         "yawn":1.12

@@ -2,11 +2,9 @@ import os
 import json
 
 config_root = os.getcwd()
-config_url = os.path.join(config_root, "config.json")
-
-if not os.path.isfile(config_url):
-    config_url = os.path.join(config_root,
+config_url = os.path.join(config_root,
                               "common", "config.json")
+
 
 def set_config(camera_source=0,
                  prompt_mode={"voice_broadcast":1, "windows_warning":1, "info_prompt":0},

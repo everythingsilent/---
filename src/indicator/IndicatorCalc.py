@@ -1,8 +1,7 @@
-import cv2
 import time
 
 from  indicator import AspectRatioCalc, IndicatorFusion
-from common import ConfigGeneration
+import ConfigGeneration
 
 CONFIG = ConfigGeneration.get_config()
 
@@ -84,7 +83,6 @@ class Fatigue:
 
 
     def update(self, frame):
-
         # 计算获取ear与mar的过程时间，即当前帧的时间
         start_time = time.time()
         frame, ear, mar = AspectRatioCalc.get_aspect_ratio(frame,
@@ -93,10 +91,10 @@ class Fatigue:
         end_time = time.time()
         process_time = end_time - start_time
 
-        self.total_frame+=1
-        # self.total_time+=process_time
+        if (ear != None) and (mar != None):
+            self.total_frame+=1
+            self.total_time+=process_time
 
-        self.update_close_eye(ear, process_time)
-        self.update_yawn(mar)
-
+            self.update_close_eye(ear, process_time)
+            self.update_yawn(mar)
         return frame
