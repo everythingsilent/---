@@ -9,7 +9,7 @@
         "eye":0.2,
         "yawn":1.12
     },
-    "prompt_interval_minute":2,
+    "prompt_interval_minute":0.2,
     "prompt_mode":{
         "info_prompt":0,
         "voice_broadcast":1,

@@ -7,7 +7,7 @@
 # WARNING! All changes made in this file will be lost!
 
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt
+from PyQt5.QtCore import Qt, QTimer
 from PyQt5.QtGui import QMouseEvent
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
@@ -94,6 +94,11 @@ class PromptWindow(QMainWindow):
         super().__init__()
         self.promptWindow = Ui_MainWindow()
         self.promptWindow.setupUi(self)
+
+        self.closeTimer = QTimer()
+        self.closeTimer.timeout.connect(self.accept)
+        self.closeTimer.start(10000)
+
         if fatigue_prompt_level == 1:
             self.promptWindow.imgLabel.setPixmap(QtGui.QPixmap(":/ico/images/走路.png"))
             self.promptWindow.infoLabel.setText("您已经 轻度疲劳，运动一下。")
@@ -107,3 +112,6 @@ class PromptWindow(QMainWindow):
             self.promptWindow.imgLabel.setPixmap(QtGui.QPixmap(":/ico/images/工人.png"))
             self.promptWindow.infoLabel.setText("当前您的状态为 清醒。")
 
+
+    def accept(self):
+        self.close()

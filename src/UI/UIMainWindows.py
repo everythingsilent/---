@@ -39,10 +39,10 @@ class Ui_Form(object):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "疲劳检测测试样机"))
         self.pushButton.setText(_translate("Form", "开始检测"))
-        self.pushButton_2.setText(_translate("Form", "关闭摄像头"))
-        self.label_2.setText(_translate("Form", "摄像头加载中"))
+        self.pushButton_2.setText(_translate("Form", "停止检测"))
+        self.label_2.setText(_translate("Form", "测试样机"))
 
         Form.setWindowFlags(QtCore.Qt.WindowStaysOnTopHint)
-        self.pushButton.setDisabled(True)
         self.pushButton_2.setDisabled(True)
+
 from UI import common_rc

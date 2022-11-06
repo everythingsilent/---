@@ -1,6 +1,6 @@
 from UI.UIMainWindows import Ui_Form
 from UI.promptWindow import PromptWindow
-from PyQt5.QtWidgets import *
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from PyQt5.QtGui import QImage, QPixmap
 from PyQt5.QtCore import QUrl
 from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
@@ -8,6 +8,7 @@ from PyQt5.QtMultimedia import QMediaContent, QMediaPlayer
 import cv2
 from threading import Thread
 import time
+import sys
 from decimal import Decimal
 
 from common import ConfigGeneration
@@ -24,39 +25,33 @@ class MainWindow(QMainWindow):
 
         self.fatigue_detector = IndicatorCalc.Fatigue()
 
-        # 初始化摄像头
-        self.camera = Thread(target=self.open_camera).start()
         self.camera_switch = False
+        self.camera = None
 
         self.windows.pushButton.clicked.connect(self.start_detection)
-        self.windows.pushButton_2.clicked.connect(self.stop_camera)
+        self.windows.pushButton_2.clicked.connect(self.stop_detection)
 
 
-    def open_camera(self):
-        self.camera = cv2.VideoCapture(CONFIG["camera_source"])
-        self.windows.pushButton.setDisabled(False)
-
-        self.windows.label_2.setText("摄像头加载成功")
-        self.camera_switch = True
-
-
-    def stop_camera(self):
+    def stop_detection(self):
         self.camera.release()
         self.camera_switch = False
+        self.windows.pushButton.setDisabled(False)
+        self.windows.pushButton_2.setDisabled(True)
 
 
     def start_detection(self):
+        self.camera = cv2.VideoCapture(CONFIG["camera_source"], cv2.CAP_DSHOW)
+        self.camera_switch = True
         self.windows.pushButton.setDisabled(True)
         self.windows.pushButton_2.setDisabled(False)
 
         def show_frame(current_frame):
-            frame_qt = cv2.cvtColor(frame, cv2.COLOR_BGR2RGBA)
+            frame_qt = cv2.cvtColor(current_frame, cv2.COLOR_BGR2RGBA)
             frame_qt = QImage(frame_qt.data,
                               frame_qt.shape[1], frame_qt.shape[0],
                               QImage.Format_RGB32).rgbSwapped()
             self.windows.label.setPixmap(QPixmap.fromImage(frame_qt))
             self.windows.label.show()
-
 
         def show_fatigue_info(fatigue_detector):
             fatigue_indicator_class = ["清醒", "轻度疲劳", "中度疲劳", "重度疲劳"]
@@ -91,18 +86,8 @@ class MainWindow(QMainWindow):
 
 
         def prompt_windows_warning(current_indicator):
-            def close_window_warning(window, t):
-                time.sleep(t)
-                window.close()
-
-            windows_warning_app = QApplication([])
-            window_warning = PromptWindow(current_indicator)
-            window_warning.show()
-
-            close_window_warning_prompt = Thread(target=close_window_warning, args=(window_warning, 10))
-            close_window_warning_prompt.start()
-
-            windows_warning_app.exec_()
+            self.window_warning = PromptWindow(current_indicator)
+            self.window_warning.show()
 
 
         def prompt_info_prompt(current_indicator):
@@ -112,9 +97,9 @@ class MainWindow(QMainWindow):
 
         def prompt_mode(current_indicator):
             if CONFIG["prompt_mode"]["voice_broadcast"] == 1:
-                Thread(target=prompt_voice_broadcast, args=(current_indicator,)).start()
+                prompt_voice_broadcast(current_indicator)
             if CONFIG["prompt_mode"]["windows_warning"] == 1:
-                Thread(target=prompt_windows_warning, args=(current_indicator,)).start()
+                prompt_windows_warning(current_indicator)
             if CONFIG["prompt_mode"]["info_prompt"] == 1:
                 Thread(target=prompt_info_prompt, args=(current_indicator,)).start()
 
@@ -134,11 +119,12 @@ class MainWindow(QMainWindow):
 
             # 根据提示间隔提示 Decimal解决浮点计算不精确问题
             current_time = time.time() - initiate_time
-            current_minute = round(current_time/60, 2)
+            current_minute = round(current_time / 60, 2)
             trigger_time = Decimal(str(current_minute)) % Decimal(str(prompt_interval_minute))
 
             self.fatigue_detector.total_time = current_time
-            self.windows.label_2.setText(self.windows.label_2.text()+f"\n检测分钟时长:{current_minute}分\n触发提示时间:{trigger_time}/{prompt_interval_minute} ")
+            self.windows.label_2.setText(
+                self.windows.label_2.text() + f"\n检测分钟时长:{current_minute}分\n触发提示时间:{trigger_time}/{prompt_interval_minute} ")
 
             if trigger_time == 0 and last_recorded_minute != current_minute:
                 last_recorded_minute = current_minute
@@ -151,7 +137,7 @@ class MainWindow(QMainWindow):
 
 
 if __name__ == "__main__":
-    app = QApplication([])
+    app = QApplication(sys.argv)
     main_window = MainWindow()
     main_window.show()
-    app.exec_()
+    sys.exit(app.exec_())
