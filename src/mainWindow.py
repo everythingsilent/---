@@ -68,7 +68,6 @@ class MainWindow(QMainWindow):
                                          f"距系统触发提示时间:{t_time}/{pi_minute}")
 
 
-
         def prompt_voice_broadcast(current_indicator):
             def get_audio_path():
                 if current_indicator == 1:
