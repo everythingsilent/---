@@ -5,5 +5,9 @@ pip install dlib==19.6.1
 pip install opencv-python==4.5.4.60
 
 
+pip install pyqtchart
+pip install PySide2
+
+
 conda activate fatigue_detecion
 python mainWindow.py
